@@ -1,9 +1,7 @@
 import os
-import numpy as np
-from torch.utils.data import Dataset, DataLoader
 from utils.helpers import import_data
 
-class DataLoader(Dataset):
+class DataLoader:
     def __init__(self, data_dir, file_idx = None, file_name = None, pretransform = None):
         assert file_name is not None or file_idx is not None 
         self.data_dir = data_dir

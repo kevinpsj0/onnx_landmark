@@ -2,7 +2,6 @@
 import os 
 import json
 import numpy as np
-import pandas as pd
 import plotly.graph_objects as go
 
 coordinate_names = ['CR', 'DistalRef', 'Face', 'MesialRef', 'TipRef', 'ToothAxis']
@@ -116,8 +115,8 @@ def coord_to_trace(dict_label, legendgroup, colors, symbol) :
             if name == "ToothAxis" : 
                 center = coords[0]
                 direction = coords[-1]
-                start = center - direction * 5
-                end = center + direction * 5
+                start = center - direction * 1
+                end = center + direction * 1
                 trace = create_arrow(
                         start, end, colors[j], f'{name} {id}', legendgroup
                     )
@@ -165,3 +164,17 @@ def create_mesh(mesh, color = 'lightgray', title = 'Mesh') :
             opacity=0.6,
             name = title
         )
+
+def compare_predictions(predictions, ground_truth):
+    keys = sorted(predictions.keys())  
+    
+    for key in keys:
+        pred = predictions[key]
+        gt = ground_truth[key]
+        
+        print(f"Comparison for key {key}:")
+        print("Prediction:\t\t\tGround Truth:")
+        print("-" * 80)
+        for p, g in zip(pred, gt):
+            print(f"{p}\t\t{g}")
+        print("\n" + "=" * 80 + "\n")

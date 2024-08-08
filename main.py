@@ -25,8 +25,12 @@ if __name__ == "__main__":
     config_path = "config.yaml"
     pipeline = Pipeline(model_path, 0)
     result = pipeline.run()
-    print(result)
+    print("--------Pred-----------")
+    print({key: result[key] for key in sorted(result)})
 
-    print(pipeline.dataset.get_raw('Upper')[2])
+    print("------GT---------------")
+    gt = pipeline.dataset.get_raw('Upper')[2]|pipeline.dataset.get_raw('Lower')[2]
+    print({key: gt[key] for key in sorted(gt)})
+    
     
     
