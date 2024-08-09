@@ -28,7 +28,7 @@ if __name__ == "__main__":
     print("--------Pred-----------")
     print({key: result[key] for key in sorted(result)})
 
-    print("------GT---------------")
+    print("------------GT---------------")
     gt = pipeline.dataset.get_raw('Upper')[2]|pipeline.dataset.get_raw('Lower')[2]
     print({key: gt[key] for key in sorted(gt)})
     

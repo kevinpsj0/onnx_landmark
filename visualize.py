@@ -3,7 +3,7 @@ from dataset.preprocess import Preprocessor
 from models.inference import Inference
 from dataset.postprocess import Postprocessor
 from dataset.data_loader import DataLoader
-from utils.helpers import visualize
+from utils.helpers import visualize, compare_predictions
 import trimesh 
 import numpy as np
 
@@ -42,5 +42,5 @@ if __name__ == "__main__":
     combined_faces = np.vstack((upper_faces, lower_faces_adjusted))
     combined_mesh = trimesh.Trimesh(vertices=combined_vertices, faces=combined_faces)
     visualize(combined_mesh, combined_labels, result)
-    
+    compare_predictions(result, combined_labels)
     

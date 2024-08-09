@@ -106,7 +106,12 @@ def visualize(mesh=None, gt_label=None, pred_label=None, file_name = None):
         title=title,
         legend=dict(itemsizing='constant')
     )
-    fig.show()
+    # Ensure the output directory exists
+    output_path = 'visualize_outputs'
+    os.makedirs(output_path, exist_ok=True)
+    file_path = os.path.join(output_path, title+".html")
+    fig.write_html(file_path)
+    print(f"Visualization saved to {file_path}")
 
 def coord_to_trace(dict_label, legendgroup, colors, symbol) : 
     traces = []
