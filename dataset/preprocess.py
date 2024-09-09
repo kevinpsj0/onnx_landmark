@@ -3,7 +3,7 @@ import trimesh
 import pyfqmr
 
 class Preprocessor:
-    def __init__(self, num_paddding = 2, num_points = 8000):
+    def __init__(self, num_paddding = 0, num_points = 8000):
         self.num_padding = num_paddding
         self.num_points = num_points
         self.norm_params = {}
@@ -30,7 +30,7 @@ class Preprocessor:
         
         return processed_inputs
 
-    def crop_bounding_box(self, faces, vertices, landmarks, segmentation, padding = 2) : 
+    def crop_bounding_box(self, faces, vertices, landmarks, segmentation, padding = 0) : 
         """
         Crop out a bounding box around the segmented object in the mesh, ensuring all coordinates are included
         and the bounding box is padded to each direction.
@@ -66,12 +66,12 @@ class Preprocessor:
             max_coords = np.max(segment_vertices, axis=0)
             
             # Apply specific padding to bounding box
-            min_coords[0] -= 2 + padding
-            max_coords[0] += 2 + padding
-            min_coords[1] -= 2 + padding
-            max_coords[1] += 2 + padding
-            min_coords[2] -= 5 + padding
-            max_coords[2] += 5 + padding
+            min_coords[0] -= 4 + padding
+            max_coords[0] += 4 + padding
+            min_coords[1] -= 4 + padding
+            max_coords[1] += 4 + padding
+            min_coords[2] -= 7 + padding
+            max_coords[2] += 7 + padding
             
             # Crop the mesh
             # Identify all vertices within the padded bounding box

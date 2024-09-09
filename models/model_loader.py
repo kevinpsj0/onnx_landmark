@@ -5,5 +5,5 @@ class ModelLoader:
         self.model_path = model_path
 
     def load_model(self):
-        session = ort.InferenceSession(self.model_path)
+        session = ort.InferenceSession(self.model_path, providers=['CPUExecutionProvider'])
         return session

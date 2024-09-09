@@ -32,7 +32,6 @@ class DataLoader:
 
         if data_upper is None or data_lower is None:
             raise FileNotFoundError(f"Data files missing for case: {self.case_name}")
-        
 
         self.raw_data['Upper'] = data_upper
         self.raw_data['Lower'] = data_lower
