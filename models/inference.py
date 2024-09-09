@@ -10,7 +10,8 @@ class Inference:
                         
             # Run ONNX model inference
             inputs = np.expand_dims(inputs, axis = 0)
-            ort_inputs = {model.get_inputs()[0].name: inputs}
+            id = np.expand_dims(id, axis = 0).astype(np.int64)
+            ort_inputs = {'l_xyz_': inputs, 'l_class_ids_': id}
             ort_outs = model.run(None, ort_inputs)
             
             # Collect predictions

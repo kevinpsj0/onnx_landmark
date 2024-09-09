@@ -20,13 +20,13 @@ class Preprocessor:
             # Downscale
             f, v = self.downscale_mesh(vertices = vertice, faces = face, num_points = self.num_points)
 
-            # Compute Centroids
-            centroids = self.compute_centroids(f, v)
-            
+            # Compute triangles
+            triangles = self.compute_triangles(f, v)      
+
             # Normalize
             self.fit(v, bb, tooth_id)
-            centroids, landmark = self.transform(centroids, landmark, tooth_id)
-            processed_inputs.append((centroids,landmark, tooth_id))
+            triangles, landmark = self.transform(triangles, landmark, tooth_id)
+            processed_inputs.append((triangles,landmark, int(tooth_id)))
         
         return processed_inputs
 
@@ -99,6 +99,10 @@ class Preprocessor:
         input = vertices[faces]
         input = input.mean(axis=1)
         return input
+    
+    def compute_triangles(self, faces, vertices) : 
+        input = vertices[faces]
+        return input.reshape(input.shape[0],9)
 
     def fit(self, vertices, bounding_box, tooth_id) :
         self.norm_params[tooth_id] = {}
@@ -109,11 +113,13 @@ class Preprocessor:
         self.norm_params[tooth_id]['mins'] = vertices.min(axis=0)
         self.norm_params[tooth_id]['maxs'] = vertices.max(axis=0)
 
-    def transform(self, centroids, landmarks, tooth_id) : 
+    def transform(self, triangles, landmarks, tooth_id) : 
         # Transform centroids
         landmarks = landmarks.copy()
         for i in range(3) : 
-            centroids[:, i] = (centroids[:, i] - self.norm_params[tooth_id]['mins'][i]) / (self.norm_params[tooth_id]['maxs'][i] - self.norm_params[tooth_id]['mins'][i])  
+            triangles[:, i] = (triangles[:, i] - self.norm_params[tooth_id]['means'][i]) / self.norm_params[tooth_id]['stds'][i]  # point 1
+            triangles[:, i + 3] = (triangles[:, i + 3] - self.norm_params[tooth_id]['means'][i]) / self.norm_params[tooth_id]['stds'][i]  # point 2
+            triangles[:, i + 6] = (triangles[:, i + 6] - self.norm_params[tooth_id]['means'][i]) / self.norm_params[tooth_id]['stds'][i]  # point 3
 
         # Transform labels
         coords = landmarks[0:5]
@@ -129,7 +135,7 @@ class Preprocessor:
         # Combine processed data
         processed_landmarks = np.hstack((processed_coords, normalized_axis.reshape(-1,3)))
         
-        return np.array(centroids).astype(np.float32), np.array(processed_landmarks).astype(np.float32)
+        return np.array(triangles).astype(np.float32), np.array(processed_landmarks).astype(np.float32)
 
     @staticmethod
     def downscale_mesh(faces, vertices, num_points: int = 8000) -> trimesh.Trimesh:

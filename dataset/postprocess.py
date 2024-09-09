@@ -8,6 +8,7 @@ class Postprocessor:
         predictions, tooth_ids = model_output
         processed_outputs = {}
         for pred, id in zip(predictions, tooth_ids):
+            id = str(id[0])
             processed_outputs[id] = self.inverse_transform(pred, id)
 
         return processed_outputs
@@ -17,7 +18,7 @@ class Postprocessor:
         # Inverse transform labels
         processed_coords = landmarks[:, :15].reshape(-1, 3)
         axis = landmarks[:, -3:]
-
+        
         # Min-Max inverse scale coordinates using norm_params
         coords = processed_coords * (self.norm_params[tooth_id]['label_maxs'] - self.norm_params[tooth_id]['label_mins']) + self.norm_params[tooth_id]['label_mins']
         

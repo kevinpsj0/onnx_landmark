@@ -21,7 +21,7 @@ class Pipeline:
         return final_output
 
 if __name__ == "__main__":
-    model_path = "models/model.onnx"
+    model_path = "models/v8.onnx"
     config_path = "config.yaml"
     pipeline = Pipeline(model_path, 0)
     result = pipeline.run()
