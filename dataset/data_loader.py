@@ -1,5 +1,5 @@
 import os
-from utils.helpers import import_data
+from utils.helpers import import_data, import_stl
 
 class DataLoader:
     def __init__(self, data_dir, file_idx = None, file_name = None, pretransform = None):
@@ -40,4 +40,33 @@ class DataLoader:
 
     def get_raw(self, pre) : 
         return self.raw_data[pre]
+    
+
+class CustomData:
+    def __init__(self, data_dir, file_idx = None, file_name = None, pretransform = None):
+        assert file_name is not None or file_idx is not None 
+        self.data_dir = data_dir
+        self.case_dir = None
+        self.case_name = None
+        self.raw_data = {}
+        self.processed_data = []
+        self.pretransform = pretransform
+
+        self._load_case(file_name, file_idx)
+        self._process()
+
+    
+    def __len__(self):
+        return len(self.processed_data)
+
+    def __getitem__(self, idx):
+        return self.processed_data[idx]
+
+    def _load_case(self, file_name, file_idx) : 
+        cases = [case for case in os.listdir(self.data_dir) if os.path.isdir(os.path.join(self.data_dir, case))]
+        self.case_name = file_name if file_name else cases[file_idx]
+        self.case_dir = os.path.join(self.data_dir, self.case_name)
         
+        for file in os.listdir(self.case_dir) :     
+            self.processed_data.append(import_stl(os.path.join(self.data_dir, self.case_dir, file)))
+            self.pretransform

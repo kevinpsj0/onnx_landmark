@@ -26,3 +26,6 @@ class Postprocessor:
         original_landmarks = np.concatenate([coords,axis])
         
         return original_landmarks
+
+    def inverse_transform_tooth(self, tooth) : 
+        pass

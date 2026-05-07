@@ -3,6 +3,8 @@ import os
 import json
 import numpy as np
 import plotly.graph_objects as go
+import trimesh 
+import re
 
 coordinate_names = ['CR', 'DistalRef', 'Face', 'MesialRef', 'TipRef', 'ToothAxis']
 
@@ -48,6 +50,29 @@ def load_landmarks(landmarks_path):
 
         data_list[tooth_id] = np.array(coordinates)
     return data_list
+
+def import_stl(case_path) : 
+    pattern = r'(\d+)_min\(([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\)_max\(([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\)'
+    match = re.search(pattern, case_path)
+    
+    if match:
+    # Extract the id, min, and max values
+        file_id = int(match.group(1))
+        min_values = (float(match.group(2)), float(match.group(3)), float(match.group(4)))
+        max_values = (float(match.group(5)), float(match.group(6)), float(match.group(7)))
+        
+        print(f"ID: {file_id}")
+        print(f"Min values: {min_values}")
+        print(f"Max values: {max_values}")
+    
+    mesh = trimesh.load(case_path)
+    v, f = mesh.vertices, mesh.faces
+
+    triangles = v[f]
+    params = {file_id: {}}
+    params[file_id]['label_mins'] = min_values
+    params[file_id]['label_maxs'] = max_values
+    return np.array(triangles).astype(np.float32), params, file_id
 
 def import_data(case_path, pre="Upper"):
     """
